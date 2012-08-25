@@ -1,0 +1,11 @@
+{
+  "name": "todo",
+  "version": "0.0.0",
+  "main": "app.js",
+  "dependencies": {
+    "flatiron": "",
+    "union": "",
+    "restful": "0.3.0",
+    "resourceful": ""
+  }
+}

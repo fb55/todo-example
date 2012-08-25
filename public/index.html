@@ -1,0 +1,72 @@
+<!doctype html>
+<html><head>
+	<title>tasks</title>
+</head><body>
+	<h1>tasks</h1>
+	<form id="factory">
+		<input type="text" id="tasktext" placeholder="get milk">
+		<input type="submit" value="Create task">
+	</form>
+	<input type="submit" id="clean" value="Remove finished tasks">
+	<ul id="tasks">
+		<li><i>Add some tasks to get started!
+	</ul>
+
+	<script src="http://code.jquery.com/jquery-1.8.0.min.js"></script>
+	<script>
+		var tasks = [];
+
+		function update(){
+			$.getJSON("/tasks", function(data){
+				tasks = data.tasks;
+				paint();
+			});
+		}
+
+		function paint(){
+			if(!tasks.length) return;
+			var $elem = $("#tasks");
+			$elem.html("");
+			$.each(tasks, function(i, task){
+				var str = "<li id='" + task.id + "'><input type='checkbox' ";
+				if(task.done) str += "checked";
+				str += ">" + task.title + " (" + new Date(task.ctime) + ")";
+				$elem.append(str);
+			});
+		}
+
+		$("#tasks").on("click", ":checkbox", function(){
+			var $cb = $(this),
+			    id = $cb.parent("li").attr("id"),
+			    data = {done: !!$cb.attr("checked")};
+
+			$.post("/tasks/" + id + "/update", data, update);
+		});
+
+		$("#factory").on("submit", function(){
+			var $txt = $("#tasktext"),
+			    val = $txt.val();
+
+			if(val){
+				$txt.val(""); // reset the value
+				$.post("/tasks", {title: val}, update);
+			}
+
+			return false;
+		});
+
+		$("#clean").click(function(){
+			var count = 0;
+			for(var i = 0; i < tasks.length; i++){
+				if(tasks[i].done){
+					count++;
+					$.post("/tasks/" + tasks[i].id + "/destroy", function(){
+						if(!--count) update();
+					});
+				}
+			}
+		});
+
+		update();
+	</script>
+</body></html>
