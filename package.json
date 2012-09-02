@@ -5,7 +5,7 @@
   "dependencies": {
     "flatiron": "",
     "union": "",
-    "restful": "0.3.0",
+    "restful": "0.4.x",
     "resourceful": ""
   }
 }

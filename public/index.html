@@ -17,8 +17,8 @@
 		var tasks = [];
 
 		function update(){
-			$.getJSON("/tasks", function(data){
-				tasks = data.tasks;
+			$.getJSON("/task", function(data){
+				tasks = data.task;
 				paint();
 			});
 		}
@@ -40,7 +40,7 @@
 			    id = $cb.parent("li").attr("id"),
 			    data = {done: !!$cb.attr("checked")};
 
-			$.post("/tasks/" + id + "/update", data, update);
+			$.post("/task/" + id + "/update", data, update);
 		});
 
 		$("#factory").on("submit", function(){
@@ -49,7 +49,7 @@
 
 			if(val){
 				$txt.val(""); // reset the value
-				$.post("/tasks", {title: val}, update);
+				$.post("/task", {title: val}, update);
 			}
 
 			return false;
@@ -60,7 +60,7 @@
 			for(var i = 0; i < tasks.length; i++){
 				if(tasks[i].done){
 					count++;
-					$.post("/tasks/" + tasks[i].id + "/destroy", function(){
+					$.post("/task/" + tasks[i].id + "/destroy", function(){
 						if(!--count) update();
 					});
 				}
